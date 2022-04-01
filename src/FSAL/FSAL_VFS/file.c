@@ -656,7 +656,7 @@ fsal_status_t vfs_open2(struct fsal_obj_handle *obj_hdl,
 	 * merged.
 	 */
 
-#ifdef ENABLE_VFS_DEBUG_ACL
+#ifdef ENABLE_VFS_ACL
 	if (createmode != FSAL_NO_CREATE) {
 		/* Need to amend attributes for inherited ACL, these will be
 		 * set later. We also need to test for permission to create
@@ -689,7 +689,7 @@ fsal_status_t vfs_open2(struct fsal_obj_handle *obj_hdl,
 		if (FSAL_IS_ERROR(status))
 			return status;
 	}
-#endif /* ENABLE_VFS_DEBUG_ACL */
+#endif /* ENABLE_VFS_ACL */
 
 	if (createmode != FSAL_NO_CREATE) {
 		/* Now add in O_CREAT and O_EXCL. */

@@ -550,10 +550,10 @@ static fsal_status_t makedir(struct fsal_obj_handle *dir_hdl,
 	fsal_status_t status = {0, 0};
 	int retval = 0;
 	int flags = O_PATH | O_NOACCESS;
-#ifdef ENABLE_VFS_DEBUG_ACL
+#ifdef ENABLE_VFS_ACL
 	struct fsal_attrlist attrs;
 	fsal_accessflags_t access_type;
-#endif /* ENABLE_VFS_DEBUG_ACL */
+#endif /* ENABLE_VFS_ACL */
 	vfs_file_handle_t *fh = NULL;
 
 	vfs_alloc_handle(fh);
@@ -579,7 +579,7 @@ static fsal_status_t makedir(struct fsal_obj_handle *dir_hdl,
 		goto hdlerr;
 	}
 
-#ifdef ENABLE_VFS_DEBUG_ACL
+#ifdef ENABLE_VFS_ACL
 	access_type = FSAL_MODE_MASK_SET(FSAL_W_OK) |
 		FSAL_ACE4_MASK_SET(FSAL_ACE_PERM_ADD_SUBDIRECTORY);
 	status = dir_hdl->obj_ops->test_access(dir_hdl, access_type, NULL, NULL,
@@ -602,7 +602,7 @@ static fsal_status_t makedir(struct fsal_obj_handle *dir_hdl,
 
 	if (FSAL_IS_ERROR(status))
 		return status;
-#endif /* ENABLE_VFS_DEBUG_ACL */
+#endif /* ENABLE_VFS_ACL */
 
 
 	unix_mode = fsal2unix_mode(attrib->mode)
@@ -747,10 +747,10 @@ static fsal_status_t makenode(struct fsal_obj_handle *dir_hdl,
 	int retval = 0;
 	dev_t unix_dev = 0;
 	int flags = O_PATH | O_NOACCESS;
-#ifdef ENABLE_VFS_DEBUG_ACL
+#ifdef ENABLE_VFS_ACL
 	struct fsal_attrlist attrs;
 	fsal_accessflags_t access_type;
-#endif /* ENABLE_VFS_DEBUG_ACL */
+#endif /* ENABLE_VFS_ACL */
 	vfs_file_handle_t *fh = NULL;
 
 	vfs_alloc_handle(fh);
@@ -768,7 +768,7 @@ static fsal_status_t makenode(struct fsal_obj_handle *dir_hdl,
 
 	myself = container_of(dir_hdl, struct vfs_fsal_obj_handle, obj_handle);
 
-#ifdef ENABLE_VFS_DEBUG_ACL
+#ifdef ENABLE_VFS_ACL
 	fsal_prepare_attrs(&attrs, ATTR_ACL);
 
 	status = dir_hdl->obj_ops->getattrs(dir_hdl, &attrs);
@@ -784,7 +784,7 @@ static fsal_status_t makenode(struct fsal_obj_handle *dir_hdl,
 
 	if (FSAL_IS_ERROR(status))
 		return status;
-#endif /* ENABLE_VFS_DEBUG_ACL */
+#endif /* ENABLE_VFS_ACL */
 
 	if (dir_hdl->fsal != dir_hdl->fs->fsal) {
 		LogDebug(COMPONENT_FSAL,
@@ -797,14 +797,14 @@ static fsal_status_t makenode(struct fsal_obj_handle *dir_hdl,
 		goto hdlerr;
 	}
 
-#ifdef ENABLE_VFS_DEBUG_ACL
+#ifdef ENABLE_VFS_ACL
 	access_type = FSAL_MODE_MASK_SET(FSAL_W_OK) |
 		FSAL_ACE4_MASK_SET(FSAL_ACE_PERM_ADD_FILE);
 	status = dir_hdl->obj_ops->test_access(dir_hdl, access_type, NULL, NULL,
 					      false);
 	if (FSAL_IS_ERROR(status))
 		return status;
-#endif /* ENABLE_VFS_DEBUG_ACL */
+#endif /* ENABLE_VFS_ACL */
 
 	unix_mode = fsal2unix_mode(attrib->mode)
 	    & ~op_ctx->fsal_export->exp_ops.fs_umask(op_ctx->fsal_export);
@@ -967,10 +967,10 @@ static fsal_status_t makesymlink(struct fsal_obj_handle *dir_hdl,
 	fsal_status_t status = {0, 0};
 	int retval = 0;
 	int flags = O_PATH | O_NOACCESS;
-#ifdef ENABLE_VFS_DEBUG_ACL
+#ifdef ENABLE_VFS_ACL
 	struct fsal_attrlist attrs;
 	fsal_accessflags_t access_type;
-#endif /* ENABLE_VFS_DEBUG_ACL */
+#endif /* ENABLE_VFS_ACL */
 	vfs_file_handle_t *fh = NULL;
 
 	vfs_alloc_handle(fh);
@@ -996,7 +996,7 @@ static fsal_status_t makesymlink(struct fsal_obj_handle *dir_hdl,
 		goto hdlerr;
 	}
 
-#ifdef ENABLE_VFS_DEBUG_ACL
+#ifdef ENABLE_VFS_ACL
 	access_type = FSAL_MODE_MASK_SET(FSAL_W_OK) |
 		FSAL_ACE4_MASK_SET(FSAL_ACE_PERM_ADD_FILE);
 	status = dir_hdl->obj_ops->test_access(dir_hdl, access_type, NULL, NULL,
@@ -1019,7 +1019,7 @@ static fsal_status_t makesymlink(struct fsal_obj_handle *dir_hdl,
 
 	if (FSAL_IS_ERROR(status))
 		return status;
-#endif /* ENABLE_VFS_DEBUG_ACL */
+#endif /* ENABLE_VFS_ACL */
 
 	dir_fd = vfs_fsal_open(myself, flags, &status.major);
 
