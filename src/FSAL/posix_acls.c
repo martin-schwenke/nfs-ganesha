@@ -58,6 +58,14 @@ bool is_ace_valid_for_inherited_acl_entry(fsal_ace_t *ace)
 
 }
 
+#ifndef HAVE_ACL_GET_PERM
+#ifndef HAVE_ACL_GET_PERM_NP
+#error Missing both acl_get_perm() and acl_get_perm_np()
+#endif
+
+#define acl_get_perm(permset_d, perm) acl_get_perm_np(permset_d, perm)
+#endif /* HAVE_ACL_GET_PERM */
+
 /*
  * Check whether given perm(ACL_READ, ACL_WRITE or ACL_EXECUTE) is allowed for
  * a permset, it depends on given ace and permset of @EVERYONE entry.
@@ -91,6 +99,31 @@ bool isdeny(acl_permset_t deny, acl_permset_t everyone, acl_perm_t perm)
 
 	return acl_get_perm(deny, perm) || acl_get_perm(everyone, perm);
 }
+
+#ifndef HAVE_ACL_ENTRIES
+static int acl_entries(acl_t acl)
+{
+	int count = 0;
+	int entry_id = ACL_FIRST_ENTRY;
+	acl_entry_t entry;
+
+	while (true) {
+		int ret;
+
+		ret = acl_get_entry(acl, entry_id, &entry);
+		if (ret < 0) {
+			return -1;
+		}
+		if (ret == 0) {
+			break;
+		}
+		count++;
+		entry_id = ACL_NEXT_ENTRY;
+	}
+
+	return count;
+}
+#endif /* HAVE_ACL_ENTRIES */
 
 /* Returns no of possible fsal_ace entries from a given posix_acl */
 int ace_count(acl_t acl)
@@ -183,6 +216,20 @@ acl_entry_t get_entry(acl_t acl, acl_tag_t tag, unsigned int id)
 	}
 
 	return entry;
+}
+
+static char *acl_2_text(acl_t acl)
+{
+#ifdef HAVE_ACL_TO_ANY_TEXT
+	return acl_to_any_text(acl, NULL, ',',
+			       TEXT_ABBREVIATE | TEXT_NUMERIC_IDS);
+#else
+#ifdef HAVE_ACL_TO_TEXT_NP
+	return acl_to_text_np(acl, NULL, ACL_TEXT_NUMERIC_IDS);
+#else
+	return acl_to_text(acl, NULL);
+#endif /* HAVE_ACL_TO_TEXT_NP */
+#endif /* HAVE_ACL_TO_ANY_TEXT */
 }
 
 /*
@@ -494,7 +541,10 @@ int posix_acl_2_fsal_acl(acl_t p_posixacl, bool is_dir, bool is_inherit,
  */
 acl_t fsal_acl_2_posix_acl(fsal_acl_t *p_fsalacl, acl_type_t type)
 {
-	int ret = 0, i;
+	int ret = 0;
+#if defined(HAVE_ACL_CHECK) && defined(HAVE_ACL_ERROR)
+	int i;
+#endif /* defined(HAVE_ACL_CHECK) && defined(HAVE_ACL_ERROR) */
 	fsal_ace_t *f_ace;
 	acl_t allow_acl, deny_acl;
 	acl_entry_t a_entry, d_entry;
@@ -731,6 +781,7 @@ acl_t fsal_acl_2_posix_acl(fsal_acl_t *p_fsalacl, acl_type_t type)
 	 * ACL_GROUP_OBJ, ACL_OTHER and ACL_MASK is required only if
 	 * ACL_USER or ACL_GROUP exists
 	 */
+#if defined(HAVE_ACL_CHECK) && defined(HAVE_ACL_ERROR)
 	ret = acl_check(allow_acl, &i);
 	if (ret) {
 		if (ret > 0) {
@@ -740,12 +791,17 @@ acl_t fsal_acl_2_posix_acl(fsal_acl_t *p_fsalacl, acl_type_t type)
 		}
 
 	}
+#else
+	ret = acl_valid(allow_acl);
+	if (ret != 0) {
+		LogWarn(COMPONENT_FSAL, "Error converting ACL");
+	}
+#endif /* defined(HAVE_ACL_CHECK) && defined(HAVE_ACL_ERROR) */
 
 	if (isDebug(COMPONENT_FSAL)) {
 		char *acl_str;
 
-		acl_str = acl_to_any_text(allow_acl, NULL, ',',
-				TEXT_ABBREVIATE | TEXT_NUMERIC_IDS);
+		acl_str = acl_2_text(allow_acl);
 		LogDebug(COMPONENT_FSAL, "posix acl = %s ", acl_str);
 		acl_free(acl_str);
 	}
@@ -893,8 +949,7 @@ acl_t xattr_2_posix_acl(const struct acl_ea_header *ea_header, size_t size)
 	if (isDebug(COMPONENT_FSAL)) {
 		char *acl_str;
 
-		acl_str = acl_to_any_text(acl, NULL, ',',
-				TEXT_ABBREVIATE | TEXT_NUMERIC_IDS);
+		acl_str = acl_2_text(acl);
 		LogDebug(COMPONENT_FSAL, "posix acl = %s ", acl_str);
 		acl_free(acl_str);
 	}
@@ -932,8 +987,7 @@ int posix_acl_2_xattr(acl_t acl, void *buf, size_t size)
 	if (isDebug(COMPONENT_FSAL)) {
 		char *acl_str;
 
-		acl_str = acl_to_any_text(acl, NULL, ',',
-				TEXT_ABBREVIATE | TEXT_NUMERIC_IDS);
+		acl_str = acl_2_text(acl);
 		LogDebug(COMPONENT_FSAL, "posix acl = %s ", acl_str);
 		acl_free(acl_str);
 	}
