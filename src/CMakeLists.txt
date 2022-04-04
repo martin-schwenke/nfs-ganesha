@@ -630,6 +630,12 @@ if(HAVE_LIBACL)
 endif(HAVE_LIBACL)
 check_include_files("sys/acl.h" HAVE_SYS_ACL_H)
 if(HAVE_SYS_ACL_H)
+  # Basic POSIX ACL functions - sanity check
+  check_symbol_exists(acl_get_fd sys/acl.h HAVE_ACL_GET_FD)
+  check_symbol_exists(acl_set_fd sys/acl.h HAVE_ACL_SET_FD)
+  # Available on FreeBSD (and perhaps others) - replace on Linux
+  check_symbol_exists(acl_get_fd_np sys/acl.h HAVE_ACL_GET_FD_NP)
+  check_symbol_exists(acl_set_fd_np sys/acl.h HAVE_ACL_SET_FD_NP)
   # Available on FreeBSD (and perhaps others) - use as acl_get_perm() on Linux
   check_symbol_exists(acl_get_perm_np "sys/acl.h" HAVE_ACL_GET_PERM_NP)
   # Available on FreeBSD (and perhaps others) - use instead of acl_to_any_text()

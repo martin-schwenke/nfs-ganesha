@@ -91,6 +91,8 @@
 #cmakedefine HAVE_ACL_ERROR 1
 #cmakedefine HAVE_ACL_TO_ANY_TEXT 1
 #cmakedefine HAVE_ACL_TO_TEXT_NP 1
+#cmakedefine HAVE_ACL_GET_FD_NP 1
+#cmakedefine HAVE_ACL_SET_FD_NP 1
 #cmakedefine ENABLE_VFS_DEBUG_ACL 1
 #cmakedefine ENABLE_RFC_ACL 1
 #cmakedefine CEPHFS_POSIX_ACL 1
