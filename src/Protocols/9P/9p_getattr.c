@@ -121,19 +121,19 @@ int _9p_getattr(struct _9p_request_data *req9p, u32 *plenout, char *preply)
 	if (*request_mask & _9P_GETATTR_RDEV) {
 		mode = (u32) attrs.mode;
 		if (attrs.type == DIRECTORY)
-			mode |= __S_IFDIR;
+			mode |= S_IFDIR;
 		if (attrs.type == REGULAR_FILE)
-			mode |= __S_IFREG;
+			mode |= S_IFREG;
 		if (attrs.type == SYMBOLIC_LINK)
-			mode |= __S_IFLNK;
+			mode |= S_IFLNK;
 		if (attrs.type == SOCKET_FILE)
-			mode |= __S_IFSOCK;
+			mode |= S_IFSOCK;
 		if (attrs.type == BLOCK_FILE)
-			mode |= __S_IFBLK;
+			mode |= S_IFBLK;
 		if (attrs.type == CHARACTER_FILE)
-			mode |= __S_IFCHR;
+			mode |= S_IFCHR;
 		if (attrs.type == FIFO_FILE)
-			mode |= __S_IFIFO;
+			mode |= S_IFIFO;
 	} else
 		mode = 0;
 
