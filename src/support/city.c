@@ -34,6 +34,8 @@
  * compromising on hash quality.
  */
 
+#include "config.h"
+
 #include <string.h>
 #include "city.h"
 #include <misc/portable.h>
