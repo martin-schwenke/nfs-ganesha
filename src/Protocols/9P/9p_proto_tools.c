@@ -287,9 +287,11 @@ int _9p_tools_errno(fsal_status_t fsal_status)
 		rc = EAGAIN;
 		break;
 
+#ifdef ENODATA
 	case ERR_FSAL_NO_DATA:
 		rc = ENODATA;
 		break;
+#endif /* ENODATA */
 
 	default:
 		rc = EIO;
