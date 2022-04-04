@@ -31,9 +31,15 @@
 #ifndef _POSIX_ACLS_H
 #define _POSIX_ACLS_H
 
+#include "config.h"
+
+#ifdef HAVE_SYS_ACL_H
 #include <sys/acl.h>
+#endif /* HAVE_SYS_ACL_H */
 #include "nfs4_acls.h"
+#ifdef HAVE_ACL_LIBACL_H
 #include <acl/libacl.h>
+#endif /* HAVE_ACL_LIBACL_H */
 #include "fsal_types.h"
 
 /* inheritance flags checks */
