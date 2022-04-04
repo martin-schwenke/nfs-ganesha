@@ -629,7 +629,21 @@ if(HAVE_LIBACL)
   LIST(APPEND CMAKE_REQUIRED_LIBRARIES "acl")
 endif(HAVE_LIBACL)
 check_include_files("sys/acl.h" HAVE_SYS_ACL_H)
+if(HAVE_SYS_ACL_H)
+  # Available on FreeBSD (and perhaps others) - use as acl_get_perm() on Linux
+  check_symbol_exists(acl_get_perm_np "sys/acl.h" HAVE_ACL_GET_PERM_NP)
+  # Available on FreeBSD (and perhaps others) - use instead of acl_to_any_text()
+  check_symbol_exists(acl_to_text_np "sys/acl.h" HAVE_ACL_TO_TEXT_NP)
+endif(HAVE_SYS_ACL_H)
 check_include_files("acl/libacl.h" HAVE_ACL_LIBACL_H)
+if(HAVE_ACL_LIBACL_H)
+  # Linux only - replace/avoid elsewhere
+  check_symbol_exists(acl_entries "acl/libacl.h" HAVE_ACL_ENTRIES)
+  check_symbol_exists(acl_get_perm "acl/libacl.h" HAVE_ACL_GET_PERM)
+  check_symbol_exists(acl_check "acl/libacl.h" HAVE_ACL_CHECK)
+  check_symbol_exists(acl_error "acl/libacl.h" HAVE_ACL_ERROR)
+  check_symbol_exists(acl_to_any_text "acl/libacl.h" HAVE_ACL_TO_ANY_TEXT)
+endif(HAVE_ACL_LIBACL_H)
 
 # Validate fsal dependencies
 

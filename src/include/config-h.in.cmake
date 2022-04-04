@@ -84,6 +84,13 @@
 #cmakedefine USE_LTTNG 1
 #cmakedefine HAVE_SYS_ACL_H 1
 #cmakedefine HAVE_ACL_LIBACL_H 1
+#cmakedefine HAVE_ACL_ENTRIES 1
+#cmakedefine HAVE_ACL_GET_PERM 1
+#cmakedefine HAVE_ACL_GET_PERM_NP 1
+#cmakedefine HAVE_ACL_CHECK 1
+#cmakedefine HAVE_ACL_ERROR 1
+#cmakedefine HAVE_ACL_TO_ANY_TEXT 1
+#cmakedefine HAVE_ACL_TO_TEXT_NP 1
 #cmakedefine ENABLE_VFS_DEBUG_ACL 1
 #cmakedefine ENABLE_RFC_ACL 1
 #cmakedefine CEPHFS_POSIX_ACL 1
