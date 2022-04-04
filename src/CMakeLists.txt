@@ -622,6 +622,10 @@ if (USE_MAN_PAGE)
   endif(NOT SPHINX_BUILD)
 endif(USE_MAN_PAGE)
 
+# POSIX ACLs - these may be used in multiple places
+check_include_files("sys/acl.h" HAVE_SYS_ACL_H)
+check_include_files("acl/libacl.h" HAVE_ACL_LIBACL_H)
+
 # Validate fsal dependencies
 
 gopt_test(USE_FSAL_PROXY_V4)
