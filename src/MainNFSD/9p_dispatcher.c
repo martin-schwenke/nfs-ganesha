@@ -65,6 +65,10 @@
 
 #define P_FAMILY AF_INET6
 
+#ifndef POLLRDHUP
+#define POLLRDHUP 0
+#endif /* POLLRDHUP */
+
 static struct fridgethr *_9p_worker_fridge;
 
 static struct _9p_req_st _9p_req_st;	/*< 9P request queues */
