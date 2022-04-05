@@ -30,6 +30,13 @@
 #include <rpc/nettype.h>
 #include <netdb.h>
 
+#ifndef s6_addr16
+#define s6_addr16 __u6_addr.__u6_addr16
+#endif /* s6_addr16 */
+#ifndef s6_addr32
+#define s6_addr32 __u6_addr.__u6_addr32
+#endif /* s6_addr132 */
+
 #include "nfs_core.h"
 #include "nfs_proto_functions.h"
 #include "sal_functions.h"
