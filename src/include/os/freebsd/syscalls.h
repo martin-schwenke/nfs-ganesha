@@ -42,7 +42,7 @@
 
 #endif				/* AT_FDCWD */
 
-#if __FreeBSD_cc_version  >= 800001
+#if !defined(HAVE_FHLINKAT) && __FreeBSD_cc_version  >= 800001
 /* getfhat() is not implemented in FreeBSD kernel yet */
 int getfhat(int fd, char *path, fhandle_t *fhp, int flag);
 int fhlink(struct fhandle *fhp, int tofd, const char *to);

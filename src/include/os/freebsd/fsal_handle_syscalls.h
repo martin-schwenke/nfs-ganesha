@@ -83,7 +83,11 @@ static inline int vfs_link_by_handle(vfs_file_handle_t *fh,
 {
 	struct fhandle *handle = v_to_fhandle(fh->handle_data);
 
+#ifdef HAVE_FHLINKAT
+	return fhlinkat(handle, destdirfd, dname);
+#else
 	return fhlink(handle, destdirfd, dname);
+#endif /* HAVE_FHLINKAT */
 }
 
 static inline int vfs_readlink_by_handle(vfs_file_handle_t *fh, int srcfd,

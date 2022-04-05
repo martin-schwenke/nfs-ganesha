@@ -27,6 +27,8 @@
  * @brief   platform dependent syscalls
  */
 
+#include "config.h"
+
 #include <errno.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -35,7 +37,7 @@
 #include <sys/types.h>
 #include <sys/module.h>
 
-#if __FreeBSD_cc_version  >= 800001
+#if !defined(HAVE_FHLINKAT) && __FreeBSD_cc_version  >= 800001
 /* Fllowing syscalls are not yet implemented in vanilla FreeBSD kernels  */
 int getfhat(int dir_fd, char *fname, struct fhandle *fhp, int flag)
 {
