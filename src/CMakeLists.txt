@@ -1041,6 +1041,7 @@ elseif(FREEBSD)
   if (FREEBSD_VERSION GREATER 1200500)
     add_definitions(-DHAS_DOFF)
   endif()
+  check_symbol_exists(fhlinkat sys/mount.h HAVE_FHLINKAT)
 elseif(DARWIN)
   # d_off unavailable on macOS
 else() # d_off is on by default for other cases
