@@ -33,6 +33,7 @@
 
 #include "config.h"
 
+#include "fsal_types.h"
 #ifdef HAVE_SYS_ACL_H
 #include <sys/acl.h>
 #endif /* HAVE_SYS_ACL_H */
@@ -40,7 +41,6 @@
 #ifdef HAVE_ACL_LIBACL_H
 #include <acl/libacl.h>
 #endif /* HAVE_ACL_LIBACL_H */
-#include "fsal_types.h"
 
 /* inheritance flags checks */
 #define IS_FSAL_ACE_HAS_INHERITANCE_FLAGS(ACE) \
