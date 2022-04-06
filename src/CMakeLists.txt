@@ -903,7 +903,7 @@ endif()
 
 # Find optional libraries/packages
 
-if (USE_ACL_MAPPING)
+if (HAVE_LIBACL AND USE_ACL_MAPPING)
   find_package(LibACL)
   if(LIBACL_FOUND)
     set(SYSTEM_LIBRARIES ${LIBACL_LIBRARY} ${SYSTEM_LIBRARIES})
