@@ -87,13 +87,23 @@ class ShowExports():
         self.exportmgr = ExportMgr(SERVICE,
                                    '/org/ganesha/nfsd/ExportMgr',
                                    'org.ganesha.nfsd.exportmgr')
-    def showexports(self):
-        print("Show exports")
+    def showexports(self, brief=False, paths=False):
+        if not brief and not paths:
+            print("Show exports")
+
         status, msg, reply = self.exportmgr.ShowExports()
         if status == True:
             _ts = reply[0]
             exports = reply[1]
+            if paths:
+                self.export_paths(exports)
+                return
+            if brief:
+                self.brief_exports(exports)
+                return
             self.proc_exports(_ts, exports)
+        elif paths or brief:
+            return 1
         else:
             self.status_message(status, msg)
 
@@ -163,6 +173,14 @@ class ShowExports():
                        export.HasNFSv42,
                        export.Has9P,
                        time.ctime(export.LastTime[0]), export.LastTime[1]))
+
+    def export_paths(self, exports):
+        for export in exports:
+            print(export.ExportPath)
+
+    def brief_exports(self, exports):
+        for export in exports:
+            print(" %d, %s" % (export.ExportID, export.ExportPath))
 
     def status_message(self, status, errormsg):
         print("Returns: status = %s, %s" % (str(status), errormsg))
@@ -488,7 +506,9 @@ if __name__ == '__main__':
         elif sys.argv[2] == "version":
             ganesha.show_version()
         elif sys.argv[2] == "exports":
-            exportmgr.showexports()
+            brief = len(sys.argv) >= 4 and sys.argv[3] == "-brief"
+            paths = len(sys.argv) >= 4 and sys.argv[3] == "-paths"
+            exportmgr.showexports(brief=brief, paths=paths)
         elif sys.argv[2] == "posix_fs":
             cachemgr.showfs()
         elif sys.argv[2] == "idmap":
